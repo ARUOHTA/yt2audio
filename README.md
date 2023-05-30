@@ -1,6 +1,7 @@
 # yt2audio
 
-This is the repository for downloading youtube vides as audio files
+This is the repository for downloading youtube vides as audio files.
+
 YouTubeの動画から音声を抜き出して、mp3音声ファイルとしてローカルにダウンロードします。さらにALACファイルに変換され、Apple Musicにアップロードされます。
 
 このプログラムは20秒に1度定期実行され、指定されたプレイリストに新たな動画が追加されていないかを探しに行きます。
