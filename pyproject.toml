@@ -1,10 +1,10 @@
 [tool.poetry]
-name = "youtube-audio-upload"
+name = "yt2audio"
 version = "0.1.0"
 description = ""
 authors = ["ARUOHTA <otaru1214@gmail.com>"]
 readme = "README.md"
-packages = [{include = "youtube_audio_upload"}]
+packages = [{include = "yt2audio"}]
 
 [tool.poetry.dependencies]
 python = ">=3.11,<3.12"
