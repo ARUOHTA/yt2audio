@@ -1,5 +1,4 @@
 init:
-	poetry init
 	poetry install
 	mkdir yt2audio/downloaded
 	touch yt2audio/archive.txt

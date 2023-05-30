@@ -5,6 +5,7 @@ YouTubeの動画から音声を抜き出して、音声ファイルとしてロ�
 
 # installation
 ```sh
+brew install poetry # poetryがない場合
 git clone https://github.com/ARUOHTA/yt2audio.git
 cd yt2audio
 make init
