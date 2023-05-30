@@ -1,5 +1,5 @@
 import rumps
-from youtube_download import audio_download
+from audio_download import audio_download
 
 # MacのMenubarに常駐させる、10秒おきに自動実行する
 class RumpsTest(rumps.App):
@@ -14,5 +14,5 @@ class RumpsTest(rumps.App):
     def download(self, _):
         audio_download()
 
-if __name__ == "__main__":
+def main():
     RumpsTest("YT", icon="icon.png").run()
