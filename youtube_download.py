@@ -1,4 +1,5 @@
 import sys, os, re
+import json
 import glob
 import shutil
 from tqdm import tqdm
@@ -9,14 +10,17 @@ import yt_dlp
 def audio_download():
     # YouTubeから動画の音声をダウンロード 
 
-    # 専用のプレイリスト
-    URL = ["https://www.youtube.com/playlist?list=PLfmdYkcYq5IS41-Xt2EsJ46nCmfheA6tG"]
-    download_dir = "/Users/aruohta/dev/youtube-audio-upload/downloaded"
-    upload_dir = "/Users/aruohta/Music/Music/Media.localized/Automatically Add to Music.localized/"
-    ext = 'm4a'
+    params_json = open("setting.json", "r")
+    params = json.load(params_json)
+    
+    
+    url_playlist = params["URL"]            # 専用のYouTubeプレイリストのURL
+    download_dir = params["download_dir"]   # ダウンロードした音声の保存先
+    upload_dir = params["upload_dir"]       # 音声のアップロード先：Apple Musicの「”ミュージック”に自動的に追加」フォルダ
+    ext = params["ext"]                     # 音声の拡張子：m4aやmp3など
 
     ydl_opts = {
-        'download_archive': '/Users/aruohta/dev/youtube-audio-upload/archive.txt', 
+        'download_archive': '~/dev/youtube-audio-upload/archive.txt', 
         'outtmpl': f'{download_dir}/%(title)s'+'.'+ext,
         'format': f"{ext}/bestaudio/best", 
         'writethumbnail': 'true', 
@@ -36,7 +40,7 @@ def audio_download():
 
     # プレイリスト上の動画を全てダウンロード
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        error_code = ydl.download(URL)
+        error_code = ydl.download(url_playlist)
         print(error_code)
         
         
