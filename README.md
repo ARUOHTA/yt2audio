@@ -39,6 +39,6 @@ Then, you need to edit yt2audio/setting.json. Below is example.
 
 定期実行ではなく、一度だけスクリプトを動かしたい場合は、`poetry run python yt2audio/core.py` とします。 
 
-# cation⚠
+# caution⚠
 This program is for me.  
 I just execute this on MacOS Ventura(M2) only.  
