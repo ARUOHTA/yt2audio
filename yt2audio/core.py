@@ -5,22 +5,22 @@ import shutil
 from tqdm import tqdm
 
 import yt_dlp
-
+import rumps
 
 def audio_download():
     # YouTubeから動画の音声をダウンロード 
 
-    params_json = open("setting.json", "r")
+    params_json = open("./yt2audio/setting.json", "r")
     params = json.load(params_json)
     
-    
-    url_playlist = params["URL"]            # 専用のYouTubeプレイリストのURL
+    url_playlist = params["url_playlist"]   # 専用のYouTubeプレイリストのURL
     download_dir = params["download_dir"]   # ダウンロードした音声の保存先
-    upload_dir = params["upload_dir"]       # 音声のアップロード先：Apple Musicの「”ミュージック”に自動的に追加」フォルダ
-    ext = params["ext"]                     # 音声の拡張子：m4aやmp3など
+    upload_dir   = params["upload_dir"]     # 音声のアップロード先：Apple Musicの「”ミュージック”に自動的に追加」フォルダ
+    archive_file = params["archive_file"]   # アーカイブファイル。
+    ext          = params["ext"]            # 音声の拡張子：m4aやmp3など
 
     ydl_opts = {
-        'download_archive': '~/dev/youtube-audio-upload/archive.txt', 
+        'download_archive': archive_file, 
         'outtmpl': f'{download_dir}/%(title)s'+'.'+ext,
         'format': f"{ext}/bestaudio/best", 
         'writethumbnail': 'true', 
@@ -50,5 +50,17 @@ def audio_download():
         shutil.move(f, upload_dir)
 
 
+# MacのMenubarに常駐させる、10秒おきに自動実行する
+class RumpsTest(rumps.App):
+    @rumps.timer(10)
+    def repetition(self, _):
+        try:
+            audio_download()
+        except:
+            pass
+
+def main():
+    RumpsTest("YT", icon="icon.png").run()
+    
 if __name__ == "__main__":
     audio_download()
