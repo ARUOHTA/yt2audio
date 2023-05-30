@@ -1,1 +1,6 @@
 downloaded/*
+.DS_Store
+.gitignore
+archive.txt
+poetry.lock
+__pycache__/youtube_download.cpython-311.pyc
