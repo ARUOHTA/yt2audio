@@ -3,8 +3,11 @@ import json
 import glob
 import shutil
 from tqdm import tqdm
+from pathlib import Path
 
 import yt_dlp
+from pydub import AudioSegment
+from mutagen.easyid3 import EasyID3
 import rumps
 
 def audio_download():
@@ -17,42 +20,46 @@ def audio_download():
     download_dir = params["download_dir"]   # ダウンロードした音声の保存先
     upload_dir   = params["upload_dir"]     # 音声のアップロード先：Apple Musicの「”ミュージック”に自動的に追加」フォルダ
     archive_file = params["archive_file"]   # アーカイブファイル。
-    ext          = params["ext"]            # 音声の拡張子：m4aやmp3など
-
+    
     ydl_opts = {
         'download_archive': archive_file, 
-        'outtmpl': f'{download_dir}/%(title)s'+'.'+ext,
-        'format': f"{ext}/bestaudio/best", 
-        'writethumbnail': 'true', 
-        'merge_output_format': ext,
+        'outtmpl': f'{download_dir}/%(title)s',
+        'format': f"bestaudio/best", 
         'postprocessors': [
-            { # Embed metadata in video using ffmpeg. 
-                'key': 'FFmpegMetadata', 
-                'add_metadata': True, 
-            },{
-                'key': 'EmbedThumbnail',
-                'already_have_thumbnail': False, 
-            },{
-                'key': 'MoveFilesAfterDownload',
-            }
-        ],
+               {'key': 'FFmpegExtractAudio',
+                'preferredcodec': "mp3",
+                'preferredquality': '192'},
+               {'key': 'FFmpegMetadata'},
+           ],
     }
-
+    
     # プレイリスト上の動画を全てダウンロード
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         error_code = ydl.download(url_playlist)
         print(error_code)
-        
-        
+    
     # Apple Musicに音声をアップロード 
-    files = glob.glob(os.path.join(download_dir, f"*.{ext}"), recursive=True)
-    for f in files:
-        shutil.move(f, upload_dir)
+    for f in Path(download_dir).iterdir():
+        if f.suffix == ".mp3":
+            # mp3をApple Losslessに変換
+            sound = AudioSegment.from_file(f, format="mp3")
+            tag = EasyID3(f)
+            artist = tag['artist'][0]
+            sound.export(f.with_suffix('.m4a'), 
+                         format="ipod", 
+                         codec="alac", 
+                         tags={"artist": artist})
+            
+            if f.with_suffix(".m4a").exists():
+                print(f"converted: {f.stem}")
+                f.unlink(missing_ok=True)
+                # AppleMusicの管理下フォルダに移動
+                shutil.move(f.with_suffix(".m4a"), upload_dir)
 
 
 # MacのMenubarに常駐させる、10秒おきに自動実行する
 class RumpsTest(rumps.App):
-    @rumps.timer(10)
+    @rumps.timer(20)
     def repetition(self, _):
         try:
             audio_download()

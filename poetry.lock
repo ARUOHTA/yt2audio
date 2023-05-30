@@ -304,6 +304,18 @@ files = [
 ]
 
 [[package]]
+name = "pydub"
+version = "0.25.1"
+description = "Manipulate audio with an simple and easy high level interface"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "pydub-0.25.1-py2.py3-none-any.whl", hash = "sha256:65617e33033874b59d87db603aa1ed450633288aefead953b30bded59cb599a6"},
+    {file = "pydub-0.25.1.tar.gz", hash = "sha256:980a33ce9949cab2a569606b65674d748ecbca4f0796887fd6f46173a7b0d30f"},
+]
+
+[[package]]
 name = "pyobjc-core"
 version = "9.1.1"
 description = "Python<->ObjC Interoperability Module"
@@ -481,4 +493,4 @@ websockets = "*"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.11,<3.12"
-content-hash = "c5a34d456363c36576bfd5b35216463313bc9921891a162467af0e88d61acc26"
+content-hash = "8c3a7df40ac1a8b3d3290375dee469fb833cc7950fd250282aa74a035e85a9e4"
