@@ -1,8 +1,5 @@
-import sys, os, re
 import json
-import glob
 import shutil
-from tqdm import tqdm
 from pathlib import Path
 
 import yt_dlp
