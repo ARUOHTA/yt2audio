@@ -7,6 +7,23 @@ from pydub import AudioSegment
 from mutagen.easyid3 import EasyID3
 import rumps
 
+def convert_mp3_alac(audio_file_obj):
+    # mp3をApple Losslessに変換
+    sound = AudioSegment.from_file(audio_file_obj, format="mp3")
+    tag = EasyID3(audio_file_obj)
+    artist = tag['artist'][0]
+    try:
+        sound.export(audio_file_obj.with_suffix('.m4a'), 
+                     format="ipod", 
+                     codec="alac", 
+                     tags={"artist": artist})
+    except Exception as e:
+        print(e)
+    else:
+        audio_file_obj.unlink(missing_ok=True)
+        return audio_file_obj.with_suffix('.m4a')
+        
+
 def audio_download():
     # YouTubeから動画の音声をダウンロード 
 
@@ -38,20 +55,9 @@ def audio_download():
     # Apple Musicに音声をアップロード 
     for f in Path(download_dir).iterdir():
         if f.suffix == ".mp3":
-            # mp3をApple Losslessに変換
-            sound = AudioSegment.from_file(f, format="mp3")
-            tag = EasyID3(f)
-            artist = tag['artist'][0]
-            sound.export(f.with_suffix('.m4a'), 
-                         format="ipod", 
-                         codec="alac", 
-                         tags={"artist": artist})
-            
-            if f.with_suffix(".m4a").exists():
-                print(f"converted: {f.stem}")
-                f.unlink(missing_ok=True)
-                # AppleMusicの管理下フォルダに移動
-                shutil.move(f.with_suffix(".m4a"), upload_dir)
+            f_alac = convert_mp3_alac(f)
+            shutil.move(f_alac, upload_dir) # AppleMusicの管理下フォルダに移動
+            print(f"converted {f.stem}")
 
 
 # MacのMenubarに常駐させる、10秒おきに自動実行する
